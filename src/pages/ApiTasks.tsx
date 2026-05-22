@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Loader from '../components/Loader'
 
 interface ApiTask {
   id: number
@@ -53,9 +54,7 @@ function ApiTasks() {
 
       <h2>API Tasks</h2>
 
-      {loading && (
-        <p>Loading...</p>
-      )}
+      {loading && <Loader />}
 
       {error && (
         <p className="error-message">
