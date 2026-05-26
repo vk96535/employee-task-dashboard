@@ -3,6 +3,8 @@ import { toast } from 'react-toastify'
 import DashboardCard from '../components/DashboardCard'
 import TaskItem from '../components/TaskItem'
 import useLocalStorage from '../hooks/useLocalStorage'
+import EditTaskModal from '../components/EditTaskModal'
+import DeleteConfirmModal from '../components/DeleteConfirmModal'
 
 function Dashboard() {
   const [task, setTask] = useState("")
@@ -14,6 +16,9 @@ function Dashboard() {
   const [editId, setEditId] = useState<number | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [error, setError] = useState("")
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleteId, setDeleteId] = useState<number | null>(null)
 
   const [taskList, setTaskList] = useLocalStorage<
     {
@@ -54,6 +59,7 @@ function Dashboard() {
       toast.info("Task Updated")
       setIsEditing(false)
       setEditId(null)
+      setShowEditModal(false)
     } else {
       setTaskList([
         ...taskList,
@@ -87,13 +93,25 @@ function Dashboard() {
     setDueDate(selectedTask.dueDate || "")
     setEditId(id)
     setIsEditing(true)
+    setShowEditModal(true)
   }
 
   const handleDeleteTask = (id: number) => {
-    const updatedTasks = taskList.filter((item) => item.id !== id)
+    setDeleteId(id)
+    setShowDeleteModal(true)
+  }
+
+  const confirmDeleteTask = () => {
+    if (deleteId === null) {
+      return
+    }
+
+    const updatedTasks = taskList.filter((item) => item.id !== deleteId)
 
     setTaskList(updatedTasks)
     toast.error("Task Deleted")
+    setShowDeleteModal(false)
+    setDeleteId(null)
   }
 
   const handleCompleteTask = (id: number) => {
@@ -296,6 +314,37 @@ function Dashboard() {
           <DashboardCard title="Completed" count={completedTaskCount} />
           <DashboardCard title="Pending" count={pendingTaskCount} />
         </div>
+
+
+        {showEditModal && (
+          <EditTaskModal
+            task={task}
+            priority={priority}
+            dueDate={dueDate}
+            onTaskChange={setTask}
+            onPriorityChange={setPriority}
+            onDueDateChange={setDueDate}
+            onSave={handleAddTask}
+            onClose={() => {
+              setShowEditModal(false)
+              setIsEditing(false)
+              setEditId(null)
+              setTask("")
+              setPriority("High")
+              setDueDate("")
+            }}
+          />
+        )}
+
+        {showDeleteModal && (
+          <DeleteConfirmModal
+            onConfirm={confirmDeleteTask}
+            onCancel={() => {
+              setShowDeleteModal(false)
+              setDeleteId(null)
+            }}
+          />
+        )}
       </div>
     </div>
   )

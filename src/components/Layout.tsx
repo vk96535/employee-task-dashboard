@@ -1,54 +1,72 @@
-import { Link, Outlet } from 'react-router-dom'
+import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
 function Layout() {
   const [darkMode, setDarkMode] = useState(false)
 
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn")
+    navigate("/login")
+  }
+
   return (
     <div
       className={
         darkMode
-          ? "min-h-screen bg-gray-900 text-white"
-          : "min-h-screen bg-gray-100 text-gray-900"
+          ? 'min-h-screen bg-slate-900 text-white transition-all duration-300'
+          : 'min-h-screen bg-gray-100 text-gray-900 transition-all duration-300'
       }
     >
       <header
         className={
           darkMode
-            ? "bg-gray-800 shadow-md py-6 mb-8"
-            : "bg-white shadow-md py-6 mb-8"
+            ? 'bg-slate-950 shadow-lg'
+            : 'bg-white shadow-lg'
         }
       >
-        <div className="max-w-6xl mx-auto px-4 md:px-6 text-center">
-          <h1 className="text-3xl md:text-5xl font-bold mb-4">
+        <div className="max-w-7xl mx-auto px-6 py-8 text-center">
+
+          <h1 className="text-5xl md:text-7xl font-bold mb-6">
             Employee Task Dashboard
           </h1>
 
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className="mb-5 rounded-xl bg-blue-600 px-5 py-2 text-white font-semibold hover:bg-blue-700"
-          >
-            {darkMode ? "Light Mode" : "Dark Mode"}
-          </button>
+          <div className="flex justify-center gap-4 mb-6">
 
-          <nav className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-8 text-base md:text-lg font-medium">
-            <Link className="text-blue-500 hover:text-blue-700" to="/">
-              Dashboard
-            </Link>
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-semibold"
+            >
+              {darkMode ? 'Light Mode' : 'Dark Mode'}
+            </button>
 
-            <Link className="text-blue-500 hover:text-blue-700" to="/api-tasks">
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-2xl font-semibold"
+            >
+              Logout
+            </button>
+
+          </div>
+
+          <nav className="flex justify-center gap-10 text-2xl font-medium">
+            <NavLink to="/">Dashboard</NavLink>
+
+            <NavLink to="/api-tasks">
               API Tasks
-            </Link>
+            </NavLink>
 
-            <Link className="text-blue-500 hover:text-blue-700" to="/about">
+            <NavLink to="/about">
               About
-            </Link>
+            </NavLink>
           </nav>
+
         </div>
       </header>
 
-      <main>
-        <Outlet context={{ darkMode }} />
+      <main className="max-w-7xl mx-auto px-6 py-10">
+        <Outlet />
       </main>
     </div>
   )
