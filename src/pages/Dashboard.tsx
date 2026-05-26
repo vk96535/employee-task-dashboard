@@ -315,7 +315,6 @@ function Dashboard() {
           <DashboardCard title="Pending" count={pendingTaskCount} />
         </div>
 
-
         {showEditModal && (
           <EditTaskModal
             task={task}
