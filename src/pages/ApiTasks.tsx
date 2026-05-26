@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import Loader from '../components/LoaderTemp'
+import Loader from '../components/Loader'
 
 interface ApiTask {
   id: number
